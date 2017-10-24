@@ -13723,7 +13723,7 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var maxFPS = 60;
+var maxFPS = 40;
 var g = 2;
 var textMode = true;
 var startText = "Uruchom w trybie tekstowym";
@@ -13731,13 +13731,10 @@ var el = void 0;
 var screenW = 1300;
 var minW = 10;
 
-var tower = '\n_________ _______           _______  _______          \n\\__   __/(  ___  )|\\     /|(  ____ \\(  ____ )         \n   ) (   | (   ) || )   ( || (    \\/| (    )|         \n   | |   | |   | || | _ | || (__    | (____)|         \n   | |   | |   | || |( )| ||  __)   |     __)         \n   | |   | |   | || || || || (      | (\\ (            \n   | |   | (___) || () () || (____/\\| ) \\ \\__         \n   )_(   (_______)(_______)(_______/|/   \\__/         \n';
-var jumper = '                                                      \n_________          _______  _______  _______  _______ \n\\__    _/|\\     /|(       )(  ____ )(  ____ \\(  ____ )\n   )  (  | )   ( || () () || (    )|| (    \\/| (    )|\n   |  |  | |   | || || || || (____)|| (__    | (____)|\n   |  |  | |   | || |(_)| ||  _____)|  __)   |     __)\n   |  |  | |   | || |   | || (      | (      | (\\ (   \n|\\_)  )  | (___) || )   ( || )      | (____/\\| ) \\ \\__\n(____/   (_______)|/     \\||/       (_______/|/   \\__/\n                                                      \n';
+var tower = '\n_________ _______           _______  _______\n\\__   __/(  ___  )|\\     /|(  ____ \\(  ____ )\n   ) (   | (   ) || )   ( || (    \\/| (    )|\n   | |   | |   | || | _ | || (__    | (____)|\n   | |   | |   | || |( )| ||  __)   |     __)\n   | |   | |   | || || || || (      | (\\ (\n   | |   | (___) || () () || (____/\\| ) \\ \\__\n   )_(   (_______)(_______)(_______/|/   \\__/\n\n';
+var jumper = '\n_________          _______  _______  _______  _______\n\\__    _/|\\     /|(       )(  ____ )(  ____ \\(  ____ )\n   )  (  | )   ( || () () || (    )|| (    \\/| (    )|\n   |  |  | |   | || || || || (____)|| (__    | (____)|\n   |  |  | |   | || |(_)| ||  _____)|  __)   |     __)\n   |  |  | |   | || |   | || (      | (      | (\\ (\n|\\_)  )  | (___) || )   ( || )      | (____/\\| ) \\ \\__\n(____/   (_______)|/     \\||/       (_______/|/   \\__/\n\n';
 
-var animation = ['         \n         \n\n__________\n o\n-0-         \n/_\\_______', '         \n         \n\n_o________\n-0-\n/ \\         \n___________', '         \n         \n o\n-0-_______\n/ \\\n         \n___________', '         \n o        \n-0-\n/_\\________\n\n         \n___________', '         \n         \n o\n-0-_______\n/ \\\n         \n___________', '         \n         \n\n_o________\n-0-\n/ \\         \n___________'];
-animation.forEach(function (el) {
-	return console.log(el);
-});
+var animation = ['\n\n\n___________ \n o\n-0-\n/_\\________ \n', '\n\n\n_o_________ \n-0-\n/ \\\n___________ \n', '\n\n o\n-0-________ \n/ \\\n\n___________ \n', '\n o\n-0-\n/_\\________ \n\n\n___________ \n', '\n\n o\n-0-________ \n/ \\\n\n___________ \n', '\n\n\n_o_________ \n-0-\n/ \\\n___________ \n'];
 
 function generateText() {
 	var background1 = "_____";
@@ -13795,12 +13792,13 @@ var Character = function (_React$Component) {
 		_this.moveRight = function () {
 			var newX = _this.state.x;
 			var newSpeedX = _this.state.speedX;
+			var maxSpeedX = _this.state.maxSpeedX;
 
 			newX += newSpeedX;
 			newSpeedX += _this.state.speedUpRateX;
 
-			if (newSpeedX > _this.state.maxSpeedX) newSpeedX = _this.state.maxSpeedX;
-			if (newSpeedX < -_this.state.maxSpeedX) newSpeedX = -_this.state.maxSpeedX;
+			if (newSpeedX > maxSpeedX) newSpeedX = maxSpeedX;
+			if (newSpeedX < -maxSpeedX) newSpeedX = -maxSpeedX;
 
 			_this.setState({
 				x: newX,
@@ -13811,12 +13809,13 @@ var Character = function (_React$Component) {
 		_this.moveLeft = function () {
 			var newX = _this.state.x;
 			var newSpeedX = _this.state.speedX;
+			var maxSpeedX = _this.state.maxSpeedX;
 
 			newX += newSpeedX;
 			newSpeedX -= _this.state.speedUpRateX;
 
-			if (newSpeedX > _this.state.maxSpeedX) newSpeedX = _this.state.maxSpeedX;
-			if (newSpeedX < -_this.state.maxSpeedX) newSpeedX = -_this.state.maxSpeedX;
+			if (newSpeedX > maxSpeedX) newSpeedX = maxSpeedX;
+			if (newSpeedX < -maxSpeedX) newSpeedX = -maxSpeedX;
 
 			_this.setState({
 				x: newX,
@@ -13827,13 +13826,15 @@ var Character = function (_React$Component) {
 		_this.slowX = function () {
 			var newX = _this.state.x;
 			var newSpeedX = _this.state.speedX;
+			var maxSpeedX = _this.state.maxSpeedX;
 
 			newX += newSpeedX;
 			if (newSpeedX > 0) newSpeedX -= _this.state.slowRateX;else if (newSpeedX < 0) newSpeedX += _this.state.slowRateX;
 
-			if (newSpeedX > _this.state.maxSpeedX) newSpeedX = _this.state.maxSpeedX;
-			if (newSpeedX < -_this.state.maxSpeedX) newSpeedX = -_this.state.maxSpeedX;
-			if (Math.abs(newSpeedX) < _this.state.slowRateX) newSpeedX = 0;
+			if (Math.abs(newSpeedX) < _this.state.slowRateX) newSpeedX = 0;else {
+				if (newSpeedX > maxSpeedX) newSpeedX = maxSpeedX;
+				if (newSpeedX < -maxSpeedX) newSpeedX = -maxSpeedX;
+			}
 
 			_this.setState({
 				x: newX,
@@ -13846,6 +13847,7 @@ var Character = function (_React$Component) {
 
 			var newY = _this.state.y;
 			var newSpeedY = _this.state.speedY;
+			var maxSpeedY = _this.state.maxSpeedY;
 			var newOnGround = _this.state.onGround;
 			var newStarted = _this.state.started;
 
@@ -13857,8 +13859,8 @@ var Character = function (_React$Component) {
 				_this.props.start();
 			}
 
-			if (newSpeedY > _this.state.maxSpeedY) newSpeedY = _this.state.maxSpeedY;
-			if (newSpeedY < -_this.state.maxSpeedY) newSpeedY = -_this.state.maxSpeedY;
+			if (newSpeedY > maxSpeedY) newSpeedY = maxSpeedY;
+			if (newSpeedY < -maxSpeedY) newSpeedY = -maxSpeedY;
 
 			_this.setState({
 				y: newY,
@@ -13871,6 +13873,7 @@ var Character = function (_React$Component) {
 		_this.moveDown = function () {
 			var newY = _this.state.y;
 			var newSpeedY = _this.state.speedY;
+			var maxSpeedY = _this.state.maxSpeedY;
 			var newOnGround = _this.state.onGround;
 
 			if (newOnGround === true) newOnGround = false;else return;
@@ -13879,8 +13882,8 @@ var Character = function (_React$Component) {
 
 			newY += newSpeedY;
 
-			if (newSpeedY > _this.state.maxSpeedY) newSpeedY = _this.state.maxSpeedY;
-			if (newSpeedY < -_this.state.maxSpeedY) newSpeedY = -_this.state.maxSpeedY;
+			if (newSpeedY > maxSpeedY) newSpeedY = maxSpeedY;
+			if (newSpeedY < -maxSpeedY) newSpeedY = -maxSpeedY;
 
 			_this.setState({
 				y: newY,
@@ -13892,12 +13895,13 @@ var Character = function (_React$Component) {
 		_this.slowY = function () {
 			var newY = _this.state.y;
 			var newSpeedY = _this.state.speedY;
+			var maxSpeedY = _this.state.maxSpeedY;
 
 			newY += newSpeedY;
 			if (_this.state.onGround !== true) newSpeedY -= _this.state.slowRateY;
 
-			if (newSpeedY > _this.state.maxSpeedY) newSpeedY = _this.state.maxSpeedY;
-			if (newSpeedY < -_this.state.maxSpeedY) newSpeedY = -_this.state.maxSpeedY;
+			if (newSpeedY > maxSpeedY) newSpeedY = maxSpeedY;
+			if (newSpeedY < -maxSpeedY) newSpeedY = -maxSpeedY;
 
 			_this.setState({
 				y: newY,
@@ -13937,6 +13941,7 @@ var Character = function (_React$Component) {
 		};
 
 		_this.calcPhysics = function () {
+			var keys = _this.state.keys;
 			_this.props.collisions(_this);
 
 			if (_this.state.y < -50) {
@@ -13944,12 +13949,12 @@ var Character = function (_React$Component) {
 				clearInterval(_this.state.intervalId);
 			}
 
-			if (_this.state.keys.w === true) _this.moveUp();
-			if (_this.state.keys.s === true) _this.moveDown();
-			if (_this.state.keys.a === true) _this.moveLeft();
-			if (_this.state.keys.d === true) _this.moveRight();
-			if (_this.state.keys.a !== true && _this.state.keys.d !== true) _this.slowX();
+			if (keys.w === true) _this.moveUp();else if (keys.s === true) _this.moveDown();
+
+			if (keys.a === true) _this.moveLeft();else if (keys.d === true) _this.moveRight();else if (keys.a !== true && keys.d !== true) _this.slowX();
+
 			_this.slowY();
+
 			if (_this.state.x < minW) _this.setState({ x: minW, speedX: 0 });
 			if (_this.state.x > screenW) _this.setState({ x: screenW, speedX: 0 });
 		};
@@ -13957,7 +13962,7 @@ var Character = function (_React$Component) {
 		_this.state = {
 			x: 0,
 			y: 128,
-			h: 50,
+			h: 80,
 			w: 50,
 			speedX: 0,
 			speedY: 0,
@@ -14245,6 +14250,11 @@ var World = function (_React$Component3) {
 			if (this.state.over === false) return _react2.default.createElement(
 				'div',
 				null,
+				_react2.default.createElement(
+					'div',
+					{ className: 'changeMode' },
+					_react2.default.createElement('input', { type: 'button', value: 'Zmie\u0144 tryb', onClick: this.changeMode })
+				),
 				_react2.default.createElement(Background, null),
 				_react2.default.createElement(
 					'div',

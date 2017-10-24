@@ -10,7 +10,7 @@ import {
 	hashHistory
 }	from 'react-router';
 
-let maxFPS=60;
+let maxFPS=40;
 let g=2;
 let textMode=true;
 let startText="Uruchom w trybie tekstowym";
@@ -19,72 +19,77 @@ let screenW=1300;
 let minW=10;
 
 let tower=`
-_________ _______           _______  _______          
-\\__   __/(  ___  )|\\     /|(  ____ \\(  ____ )         
-   ) (   | (   ) || )   ( || (    \\/| (    )|         
-   | |   | |   | || | _ | || (__    | (____)|         
-   | |   | |   | || |( )| ||  __)   |     __)         
-   | |   | |   | || || || || (      | (\\ (            
-   | |   | (___) || () () || (____/\\| ) \\ \\__         
-   )_(   (_______)(_______)(_______/|/   \\__/         
+_________ _______           _______  _______
+\\__   __/(  ___  )|\\     /|(  ____ \\(  ____ )
+   ) (   | (   ) || )   ( || (    \\/| (    )|
+   | |   | |   | || | _ | || (__    | (____)|
+   | |   | |   | || |( )| ||  __)   |     __)
+   | |   | |   | || || || || (      | (\\ (
+   | |   | (___) || () () || (____/\\| ) \\ \\__
+   )_(   (_______)(_______)(_______/|/   \\__/
+
 `;
-let jumper=`                                                      
-_________          _______  _______  _______  _______ 
+let jumper=`
+_________          _______  _______  _______  _______
 \\__    _/|\\     /|(       )(  ____ )(  ____ \\(  ____ )
    )  (  | )   ( || () () || (    )|| (    \\/| (    )|
    |  |  | |   | || || || || (____)|| (__    | (____)|
    |  |  | |   | || |(_)| ||  _____)|  __)   |     __)
-   |  |  | |   | || |   | || (      | (      | (\\ (   
+   |  |  | |   | || |   | || (      | (      | (\\ (
 |\\_)  )  | (___) || )   ( || )      | (____/\\| ) \\ \\__
 (____/   (_______)|/     \\||/       (_______/|/   \\__/
-                                                      
+
 `;
 
 let animation=[
-`         
-         
+`
 
-__________
+
+___________ 
  o
--0-         
-/_\\_______`,
-`         
-         
-
-_o________
 -0-
-/ \\         
-___________`,
-`         
-         
- o
--0-_______
+/_\\________ 
+`,
+`
+
+
+_o_________ 
+-0-
 / \\
-         
-___________`,
-`         
- o        
--0-
-/_\\________
+___________ 
+`,
+`
 
-         
-___________`,
-`         
-         
  o
--0-_______
+-0-________ 
 / \\
-         
-___________`,
-`         
-         
 
-_o________
+___________ 
+`,
+`
+ o
 -0-
-/ \\         
-___________`,
-]
-animation.forEach(el => console.log(el));
+/_\\________ 
+
+
+___________ 
+`,
+`
+
+ o
+-0-________ 
+/ \\
+
+___________ 
+`,
+`
+
+
+_o_________ 
+-0-
+/ \\
+___________ 
+`]
 
 function generateText()
 {
@@ -146,7 +151,7 @@ class Character extends React.Component
 		this.state={
 			x:0,
 			y:128,
-			h:50,
+			h:80,
 			w:50,
 			speedX:0,
 			speedY:0,
@@ -176,14 +181,15 @@ class Character extends React.Component
 	{
 		let newX=this.state.x;
 		let newSpeedX=this.state.speedX;
-		
+		let maxSpeedX=this.state.maxSpeedX;
+
 		newX+=newSpeedX;
 		newSpeedX+=this.state.speedUpRateX;
 
-		if(newSpeedX>this.state.maxSpeedX)
-			newSpeedX=this.state.maxSpeedX;
-		if(newSpeedX<-this.state.maxSpeedX)
-			newSpeedX=-this.state.maxSpeedX;
+		if(newSpeedX>maxSpeedX)
+			newSpeedX=maxSpeedX;
+		if(newSpeedX<-maxSpeedX)
+			newSpeedX=-maxSpeedX;
 
 		this.setState({
 			x:newX,
@@ -194,14 +200,15 @@ class Character extends React.Component
 	{
 		let newX=this.state.x;
 		let newSpeedX=this.state.speedX;
-		
+		let maxSpeedX=this.state.maxSpeedX;
+
 		newX+=newSpeedX;
 		newSpeedX-=this.state.speedUpRateX;
 
-		if(newSpeedX>this.state.maxSpeedX)
-			newSpeedX=this.state.maxSpeedX;
-		if(newSpeedX<-this.state.maxSpeedX)
-			newSpeedX=-this.state.maxSpeedX;
+		if(newSpeedX>maxSpeedX)
+			newSpeedX=maxSpeedX;
+		if(newSpeedX<-maxSpeedX)
+			newSpeedX=-maxSpeedX;
 
 		this.setState({
 			x:newX,
@@ -212,19 +219,23 @@ class Character extends React.Component
 	{
 		let newX=this.state.x;
 		let newSpeedX=this.state.speedX;
-		
+		let maxSpeedX=this.state.maxSpeedX;
+
 		newX+=newSpeedX;
 		if(newSpeedX>0)
 			newSpeedX-=this.state.slowRateX;
 		else if(newSpeedX<0)
 			newSpeedX+=this.state.slowRateX;
 
-		if(newSpeedX>this.state.maxSpeedX)
-			newSpeedX=this.state.maxSpeedX;
-		if(newSpeedX<-this.state.maxSpeedX)
-			newSpeedX=-this.state.maxSpeedX;
 		if(Math.abs(newSpeedX)<this.state.slowRateX)
 			newSpeedX=0;
+		else
+		{
+			if(newSpeedX>maxSpeedX)
+				newSpeedX=maxSpeedX;
+			if(newSpeedX<-maxSpeedX)
+				newSpeedX=-maxSpeedX;
+		}
 
 		this.setState({
 			x:newX,
@@ -238,6 +249,7 @@ class Character extends React.Component
 
 		let newY=this.state.y;
 		let newSpeedY=this.state.speedY;
+		let maxSpeedY=this.state.maxSpeedY;
 		let newOnGround=this.state.onGround;
 		let newStarted=this.state.started;
 
@@ -250,11 +262,11 @@ class Character extends React.Component
 			this.props.start();
 		}
 
-			
-		if(newSpeedY>this.state.maxSpeedY)
-			newSpeedY=this.state.maxSpeedY;
-		if(newSpeedY<-this.state.maxSpeedY)
-			newSpeedY=-this.state.maxSpeedY;
+
+		if(newSpeedY>maxSpeedY)
+			newSpeedY=maxSpeedY;
+		if(newSpeedY<-maxSpeedY)
+			newSpeedY=-maxSpeedY;
 
 		this.setState({
 			y:newY,
@@ -267,21 +279,22 @@ class Character extends React.Component
 	{
 		let newY=this.state.y;
 		let newSpeedY=this.state.speedY;
+		let maxSpeedY=this.state.maxSpeedY;
 		let newOnGround=this.state.onGround;
 
 		if(newOnGround===true)
 			newOnGround=false;
 		else
 			return;
-		
+
 		newSpeedY-=this.state.slowRateY;
 
 		newY+=newSpeedY;
 
-		if(newSpeedY>this.state.maxSpeedY)
-			newSpeedY=this.state.maxSpeedY;
-		if(newSpeedY<-this.state.maxSpeedY)
-			newSpeedY=-this.state.maxSpeedY;
+		if(newSpeedY>maxSpeedY)
+			newSpeedY=maxSpeedY;
+		if(newSpeedY<-maxSpeedY)
+			newSpeedY=-maxSpeedY;
 
 		this.setState({
 			y:newY,
@@ -293,15 +306,16 @@ class Character extends React.Component
 	{
 		let newY=this.state.y;
 		let newSpeedY=this.state.speedY;
-		
+		let maxSpeedY=this.state.maxSpeedY;
+
 		newY+=newSpeedY;
 		if(this.state.onGround!==true)
 			newSpeedY-=this.state.slowRateY;
 
-		if(newSpeedY>this.state.maxSpeedY)
-			newSpeedY=this.state.maxSpeedY;
-		if(newSpeedY<-this.state.maxSpeedY)
-			newSpeedY=-this.state.maxSpeedY;
+		if(newSpeedY>maxSpeedY)
+			newSpeedY=maxSpeedY;
+		if(newSpeedY<-maxSpeedY)
+			newSpeedY=-maxSpeedY;
 
 		this.setState({
 			y:newY,
@@ -341,6 +355,7 @@ class Character extends React.Component
 	};
 	calcPhysics =() =>
 	{
+		let keys=this.state.keys;
 		this.props.collisions(this);
 
 		if(this.state.y<-50)
@@ -349,17 +364,20 @@ class Character extends React.Component
 			clearInterval(this.state.intervalId);
 		}
 
-		if(this.state.keys.w===true)
+		if(keys.w===true)
 			this.moveUp();
-		if(this.state.keys.s===true)
+		else if(keys.s===true)
 			this.moveDown();
-		if(this.state.keys.a===true)
+
+		if(keys.a===true)
 			this.moveLeft();
-		if(this.state.keys.d===true)
+		else if(keys.d===true)
 			this.moveRight();
-		if(this.state.keys.a!==true && this.state.keys.d!==true)
+		else if(keys.a!==true && keys.d!==true)
 			this.slowX();
+
 		this.slowY();
+
 		if(this.state.x<minW)
 			this.setState({x:minW,speedX:0});
 		if(this.state.x>screenW)
@@ -568,6 +586,9 @@ class World extends React.Component
 							</div>
 		if(this.state.over===false)
 		return  <div>
+							<div className="changeMode">
+								<input type="button" value="Zmień tryb" onClick={this.changeMode}/>
+							</div>
 							<Background/>
 							<div>
 								{this.state.platforms.map( el => new element("platform")
