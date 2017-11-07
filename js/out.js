@@ -13728,8 +13728,8 @@ var g = 2;
 var textMode = true;
 var startText = "Uruchom w trybie tekstowym";
 var el = void 0;
-var screenW = 1300;
-var minW = 10;
+var screenW = 1280;
+var minW = 30;
 
 var tower = '\n_________ _______           _______  _______\n\\__   __/(  ___  )|\\     /|(  ____ \\(  ____ )\n   ) (   | (   ) || )   ( || (    \\/| (    )|\n   | |   | |   | || | _ | || (__    | (____)|\n   | |   | |   | || |( )| ||  __)   |     __)\n   | |   | |   | || || || || (      | (\\ (\n   | |   | (___) || () () || (____/\\| ) \\ \\__\n   )_(   (_______)(_______)(_______/|/   \\__/\n\n';
 var jumper = '\n_________          _______  _______  _______  _______\n\\__    _/|\\     /|(       )(  ____ )(  ____ \\(  ____ )\n   )  (  | )   ( || () () || (    )|| (    \\/| (    )|\n   |  |  | |   | || || || || (____)|| (__    | (____)|\n   |  |  | |   | || |(_)| ||  _____)|  __)   |     __)\n   |  |  | |   | || |   | || (      | (      | (\\ (\n|\\_)  )  | (___) || )   ( || )      | (____/\\| ) \\ \\__\n(____/   (_______)|/     \\||/       (_______/|/   \\__/\n\n';
@@ -13762,11 +13762,11 @@ var data = {
 		platform: 'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT'
 	},
 	graphic: {
-		character: "./img/idle.png",
-		background: "./img/field.jpg",
-		wLeft: "./img/wallL.png",
-		wRight: "./img/wallR.png",
-		platform: "./img/platform.png"
+		character: "./img/character.png",
+		background: "./img/background.jpg",
+		wLeft: "./img/wall.jpg",
+		wRight: "./img/wall.jpg",
+		platform: "./img/wall.jpg"
 	}
 };
 if (textMode === true) generateText();
@@ -14001,12 +14001,15 @@ var Character = function (_React$Component) {
 	}, {
 		key: 'render',
 		value: function render() {
-			var renderEl = new element("character");
+			if (this.el === undefined) {
+				var renderEl = new element("character");
+				this.el = renderEl;
+			}
 			var style = {
 				bottom: this.state.y,
 				left: this.state.x
 			};
-			return renderEl.render(style);
+			return this.el.render(style);
 		}
 	}, {
 		key: 'newX',
@@ -14034,12 +14037,17 @@ var Background = function (_React$Component2) {
 
 	_createClass(Background, [{
 		key: 'componentDidMount',
-		value: function componentDidMount() {}
+		value: function componentDidMount() {
+			this.el = new element("background");
+		}
 	}, {
 		key: 'render',
 		value: function render() {
-			var renderEl = new element("background");
-			return renderEl.render();
+			if (this.el === undefined) {
+				var renderEl = new element("background");
+				this.el = renderEl;
+			}
+			return this.el.render();
 		}
 	}]);
 
@@ -14117,10 +14125,14 @@ var World = function (_React$Component3) {
 			var plats = _this3.state.platforms;
 			var newStep = _this3.state.step;
 			var newNum = _this3.state.num + 1;
+			var hasRecalc = false;
 
 			for (var _i3 = 0; _i3 < plats.length; _i3++) {
 				plats[_i3].y = plats[_i3].y - newStep;
-			}if (newNum > 200) {
+				if (plats[_i3].y < 0) hasRecalc = true;
+			}
+
+			if (newNum > 200) {
 				newStep++;
 				newStep = newStep > 13 ? 13 : newStep;
 				newNum = 0;
@@ -14131,7 +14143,7 @@ var World = function (_React$Component3) {
 				num: newNum,
 				step: newStep
 			});
-			_this3.recalcPlatforms();
+			if (hasRecalc === true) _this3.recalcPlatforms();
 		};
 
 		_this3.changeMode = function () {
@@ -14186,8 +14198,14 @@ var World = function (_React$Component3) {
 	}, {
 		key: 'render',
 		value: function render() {
-			var wallL = new element("wLeft");
-			var wallR = new element("wRight");
+			if (this.wallL === undefined) {
+				var wallL = new element("wLeft");
+				this.wallL = wallL;
+			}
+			if (this.wallR === undefined) {
+				var wallR = new element("wRight");
+				this.wallR = wallR;
+			}
 			if (this.state.started === false) return _react2.default.createElement(
 				'div',
 				{ className: 'title' },
@@ -14250,11 +14268,6 @@ var World = function (_React$Component3) {
 			if (this.state.over === false) return _react2.default.createElement(
 				'div',
 				null,
-				_react2.default.createElement(
-					'div',
-					{ className: 'changeMode' },
-					_react2.default.createElement('input', { type: 'button', value: 'Zmie\u0144 tryb', onClick: this.changeMode })
-				),
 				_react2.default.createElement(Background, null),
 				_react2.default.createElement(
 					'div',
@@ -14264,14 +14277,13 @@ var World = function (_React$Component3) {
 							height: el.h,
 							left: el.x,
 							bottom: el.y });
-					}),
-					';'
+					})
 				),
 				_react2.default.createElement(
 					'div',
 					null,
-					wallL.render(),
-					wallR.render()
+					this.wallL.render(),
+					this.wallR.render()
 				),
 				_react2.default.createElement(Character, { collisions: this.checkCollisions,
 					move: this.movePlatforms,

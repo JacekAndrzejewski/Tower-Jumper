@@ -84,8 +84,9 @@ pre {
 
 .background {
   width: 100vw;
-  height: 80vh;
+  height: 100vh;
   font-size: 7px;
+  background-size: contain;
   color: #9D9D9D;
 }
 
@@ -97,6 +98,7 @@ pre {
 
 .platform {
   position: absolute;
+  background-size: contain;
   font-size: 15px;
   color: #5D5D5D;
   height: 50px;
@@ -107,6 +109,7 @@ pre {
   height: 70px;
   font-size: 20px;
   background-repeat: no-repeat;
+  background-size: contain;
   position: absolute;
   overflow: visible;
   color: black;
@@ -129,9 +132,15 @@ pre {
 
 .title {
   display: flex;
+  height: 100vh;
+  background: #D1D1D2;
   justify-content: center;
   align-items: center;
   flex-direction: column;
+}
+
+.title * {
+  opacity: 1;
 }
 
 .anim {
@@ -153,6 +162,8 @@ pre {
 
 .endScreen {
   display: flex;
+  height: 100vh;
+  background: #D1D1D2;
   justify-content: center;
   align-items: center;
   flex-direction: column;

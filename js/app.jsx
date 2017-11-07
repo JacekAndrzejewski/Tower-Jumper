@@ -15,8 +15,8 @@ let g=2;
 let textMode=true;
 let startText="Uruchom w trybie tekstowym";
 let el;
-let screenW=1300;
-let minW=10;
+let screenW=1280;
+let minW=30;
 
 let tower=`
 _________ _______           _______  _______
@@ -122,11 +122,11 @@ let data={
 		platform: `TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT`,
 	},
 	graphic:{
-		character: "./img/idle.png",
-		background: "./img/field.jpg",
-		wLeft: "./img/wallL.png",
-		wRight: "./img/wallR.png",
-		platform: "./img/platform.png",
+		character: "./img/character.png",
+		background: "./img/background.jpg",
+		wLeft: "./img/wall.jpg",
+		wRight: "./img/wall.jpg",
+		platform: "./img/wall.jpg",
 	},
 };
 if(textMode===true)
@@ -399,12 +399,16 @@ class Character extends React.Component
 	}
 	render()
 	{
-		let renderEl=new element("character");
+		if(this.el===undefined)
+		{
+			let renderEl=new element("character");
+			this.el=renderEl;
+		}
 		let style={
 			bottom:this.state.y,
 			left:this.state.x,
 		};
-		return renderEl.render(style);
+		return this.el.render(style);
 	}
 }
 
@@ -416,12 +420,17 @@ class Background extends React.Component
 	}
 	componentDidMount()
 	{
+		this.el=new element("background");
 
 	}
 	render()
 	{
-		let renderEl=new element("background");
-		return renderEl.render();
+		if(this.el===undefined)
+		{
+			let renderEl=new element("background");
+			this.el=renderEl;
+		}
+		return this.el.render();
 	}
 }
 
@@ -504,9 +513,14 @@ class World extends React.Component
 		let plats=this.state.platforms;
 		let newStep=this.state.step;
 		let newNum=this.state.num+1;
+		let hasRecalc=false;
 
 		for(let i=0;i<plats.length;i++)
+		{
 			plats[i].y=plats[i].y-newStep;
+			if(plats[i].y<0)
+				hasRecalc=true;
+		}
 
 		if(newNum>200)
 		{
@@ -520,7 +534,8 @@ class World extends React.Component
 			num:newNum,
 			step:newStep,
 		});
-		this.recalcPlatforms();
+		if(hasRecalc===true)
+			this.recalcPlatforms();
 	};
 	changeMode=()=>
 	{
@@ -564,8 +579,16 @@ class World extends React.Component
 	}
 	render()
 	{
-		let wallL=new element("wLeft");
-		let wallR=new element("wRight");
+		if(this.wallL===undefined)
+		{
+			let wallL=new element("wLeft");
+			this.wallL=wallL;
+		}
+		if(this.wallR===undefined)
+		{
+			let wallR=new element("wRight");
+			this.wallR=wallR;
+		}
 		if(this.state.started===false)
 			return 	<div className="title">
 								<div className="anim">
@@ -586,26 +609,23 @@ class World extends React.Component
 							</div>
 		if(this.state.over===false)
 		return  <div>
-							<div className="changeMode">
-								<input type="button" value="Zmień tryb" onClick={this.changeMode}/>
-							</div>
 							<Background/>
 							<div>
 								{this.state.platforms.map( el => new element("platform")
-																										.render({	width:el.w,
-																															height:el.h,
-																															left:el.x,
-																															bottom:el.y,}))};
+																	.render({	width:el.w,
+																				height:el.h,
+																				left:el.x,
+																				bottom:el.y,}))}
 							</div>
 							<div>
-								{wallL.render()}
-								{wallR.render()}
+								{this.wallL.render()}
+								{this.wallR.render()}
 							</div>
 							<Character 	collisions={this.checkCollisions}
 													move={this.movePlatforms}
 													start={this.startGame}
 													over={this.gameOver}/>
-						</div>;
+						</div>
 		else
 			return 	<div className="endScreen">
 								<h1>Przegrywasz!</h1>
